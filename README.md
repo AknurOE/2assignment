@@ -6,7 +6,7 @@ To run benchmarks for **all gap sequences, input types, and sizes**, use the inc
 .\scripts\run_all_benchmarks.ps1
 ```
 
-##What the script does
+## What the script does
 
 Builds the project using Maven (mvn package).
 
@@ -22,7 +22,7 @@ Runs BenchmarkRunner for each combination.
 
 Saves CSV results to docs/results/ for later analysis.
 
-##Example Output File
+## Example Output File
 
 ```bash
 
