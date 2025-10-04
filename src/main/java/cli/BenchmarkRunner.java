@@ -10,24 +10,18 @@ import java.util.Arrays;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * BenchmarkRunner — CLI-интерфейс для тестирования ShellSort.
- *
- * Пример запуска:
- *   java -cp target/assignment2-shellsort-1.0-SNAPSHOT.jar cli.BenchmarkRunner
- *        --gap=KNUTH --size=10000 --mode=random --seed=42 --out=run1.csv
- */
+
 public class BenchmarkRunner {
 
     public static void main(String[] args) {
-        // значения по умолчанию
+
         GapSequence gap = GapSequence.SHELL;
         int size = 1000;
-        String mode = "random"; // random, sorted, reversed, nearly-sorted
+        String mode = "random";
         long seed = System.currentTimeMillis();
         String out = null;
 
-        // разбор аргументов
+
         for (String arg : args) {
             if (arg.startsWith("--gap=")) {
                 String g = arg.substring("--gap=".length()).trim().toUpperCase();
@@ -52,20 +46,20 @@ public class BenchmarkRunner {
         PerformanceTracker global = new PerformanceTracker();
         ShellSortResult res = ShellSort.sortWithResult(arr, gap, global);
 
-        // Проверка корректности сортировки
+
         if (!isSorted(arr)) {
             System.err.println("❌ Ошибка: массив не отсортирован после ShellSort!");
             System.exit(2);
         }
 
-        // Печать общих метрик
+
         System.out.println("✅ Сортировка выполнена успешно!");
         System.out.println("Overall: " + res.getOverall().toString());
         System.out.println();
         System.out.println(res.csvHeader());
         for (String row : res.csvRows()) System.out.println(row);
 
-        // Запись в CSV (если указан параметр --out)
+
         if (out != null) {
             try (FileWriter fw = new FileWriter(out)) {
                 fw.write(res.csvHeader());
@@ -81,7 +75,7 @@ public class BenchmarkRunner {
         }
     }
 
-    // ---------- вспомогательные методы ----------
+
 
     private static int[] generateArray(int n, String mode, long seed) {
         Random rnd = new Random(seed);
