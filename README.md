@@ -1,36 +1,34 @@
-# Heap Sort Project
+## Running All Benchmarks
 
-This is a simple Java project demonstrating an in-place Heap Sort implementation with bottom-up heapify.
+To run benchmarks for **all gap sequences, input types, and sizes**, use the included PowerShell script:
 
-## Build & Test
-
-## Run the tests using Maven:
-
-```bash
-mvn -q -DskipTests=false test
-
-```
-## Single Benchmark (CSV to stdout)
-Run a single benchmark and output results as CSV:
-```bash
-
-java -cp target/classes:target/test-classes cli.BenchmarkRunner --n 100000 --runs 5 --dist RANDOM > docs/performance-plots/heap_random_100k.csv
-
-```
-## Batch Benchmarks (Multiple Sizes & Distributions)
-Run benchmarks for multiple array sizes and distributions:
-```bash
-
-# Default sizes: 100, 1000, 10000, 100000
-java -cp target/classes:target/test-classes cli.BatchBenchmarks --sizes 100,1000,10000,100000 --runs 5 --seed 42 --out docs/performance-plots
+```powershell
+.\scripts\run_all_benchmarks.ps1
 ```
 
-## Notes Against Rubric
+##What the script does
 
-In-place Heap Sort with bottom-up heapify (O(n)) + iterative siftDown overall O(n log n); extra space O(1).
+Builds the project using Maven (mvn package).
 
-Metrics tracked: comparisons, swaps, accesses, allocations, recursive calls.
+Iterates over all combinations of:
 
-Tests cover edge cases and include randomized cross-check with Arrays.sort.
+Gap sequences: SHELL, KNUTH, SEDGEWICK
 
-Benchmarks for required sizes & distributions produce CSV for plots.
+Input modes: random, sorted, reversed, nearly
+
+Sizes: 100, 1000, 10000, 100000
+
+Runs BenchmarkRunner for each combination.
+
+Saves CSV results to docs/results/ for later analysis.
+
+##Example Output File
+
+```bash
+
+docs/results/SHELL_random_100.csv
+docs/results/KNUTH_sorted_1000.csv
+...
+```
+
+After the script completes, you will have CSV files for every combination, ready for plotting and performance evaluation.
