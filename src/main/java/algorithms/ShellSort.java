@@ -3,8 +3,12 @@ package algorithms;
 import metrics.PerformanceTracker;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
-
+/**
+ * ShellSort — алгоритм сортировки с несколькими вариантами gap-последовательностей
+ * (Shell, Knuth, Sedgewick) и поддержкой метрик производительности.
+ */
 public class ShellSort {
 
     public enum GapSequence {
@@ -13,7 +17,9 @@ public class ShellSort {
         SEDGEWICK   // Sedgewick-like sequence
     }
 
-
+    /**
+     * Вспомогательный класс для хранения результатов сортировки
+     */
     public static class ShellSortResult {
         private final PerformanceTracker overall;
         private final int[] gaps;
@@ -41,7 +47,9 @@ public class ShellSort {
         }
     }
 
-
+    /**
+     * Основной метод сортировки с возвратом результатов
+     */
     public static ShellSortResult sortWithResult(int[] arr, GapSequence gapSequence, PerformanceTracker globalTracker) {
         if (arr == null) throw new IllegalArgumentException("Input array cannot be null");
         if (globalTracker == null) globalTracker = new PerformanceTracker();
@@ -52,6 +60,7 @@ public class ShellSort {
         int[] gaps = generateGaps(n, gapSequence);
         PerformanceTracker[] perGapTrackers = new PerformanceTracker[gaps.length];
 
+        int filled = 0;
         for (int gi = 0; gi < gaps.length; gi++) {
             int gap = gaps[gi];
             PerformanceTracker gapTracker = new PerformanceTracker();
@@ -78,19 +87,30 @@ public class ShellSort {
 
             gapTracker.stopTimer();
             perGapTrackers[gi] = gapTracker;
+            filled++;
             globalTracker.addFrom(gapTracker);
+
+            // ранний выход: если уже полностью отсортировано — прекращаем
+            if (isSorted(arr)) {
+                break;
+            }
         }
 
         globalTracker.stopTimer();
-        return new ShellSortResult(globalTracker, gaps, perGapTrackers);
+
+        // сократим массивы до реально заполненного количества gap'ов
+        int[] actualGaps = Arrays.copyOf(gaps, filled);
+        PerformanceTracker[] actualPerGap = Arrays.copyOf(perGapTrackers, filled);
+
+        return new ShellSortResult(globalTracker, actualGaps, actualPerGap);
     }
 
-
+    /** Упрощённая версия без возврата результата */
     public static void sort(int[] arr, GapSequence gapSequence, PerformanceTracker tracker) {
         sortWithResult(arr, gapSequence, tracker == null ? new PerformanceTracker() : tracker);
     }
 
-
+    /** Генерация последовательностей gap */
     public static int[] generateGaps(int n, GapSequence seq) {
         if (n <= 1) return new int[0];
         List<Integer> gaps = new ArrayList<>();
@@ -121,5 +141,10 @@ public class ShellSort {
         }
         return gaps.stream().sorted((a, b) -> Integer.compare(b, a))
                 .mapToInt(Integer::intValue).toArray();
+    }
+
+    private static boolean isSorted(int[] a) {
+        for (int i = 1; i < a.length; i++) if (a[i-1] > a[i]) return false;
+        return true;
     }
 }
