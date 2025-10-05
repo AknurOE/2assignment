@@ -7,7 +7,7 @@ import java.util.StringJoiner;
 public class PerformanceTracker {
     private long comparisons = 0;
     private long swaps = 0;
-    private long accesses = 0; // чтения или записи
+    private long accesses = 0; 
     private long startTimeNs = 0;
     private long endTimeNs = 0;
 
