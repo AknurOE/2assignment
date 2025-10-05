@@ -5,21 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
-/**
- * ShellSort — алгоритм сортировки с несколькими вариантами gap-последовательностей
- * (Shell, Knuth, Sedgewick) и поддержкой метрик производительности.
- */
+
 public class ShellSort {
 
     public enum GapSequence {
-        SHELL,      // n/2, n/4, ...
-        KNUTH,      // 1, 4, 13, 40, ... (3x+1)
-        SEDGEWICK   // Sedgewick-like sequence
+        SHELL,     
+        KNUTH,      
+        SEDGEWICK   
     }
 
-    /**
-     * Вспомогательный класс для хранения результатов сортировки
-     */
+    
     public static class ShellSortResult {
         private final PerformanceTracker overall;
         private final int[] gaps;
@@ -47,9 +42,7 @@ public class ShellSort {
         }
     }
 
-    /**
-     * Основной метод сортировки с возвратом результатов
-     */
+    
     public static ShellSortResult sortWithResult(int[] arr, GapSequence gapSequence, PerformanceTracker globalTracker) {
         if (arr == null) throw new IllegalArgumentException("Input array cannot be null");
         if (globalTracker == null) globalTracker = new PerformanceTracker();
@@ -67,14 +60,14 @@ public class ShellSort {
             gapTracker.startTimer();
 
             for (int i = gap; i < n; i++) {
-                int temp = arr[i]; gapTracker.incAccesses(); // read
+                int temp = arr[i]; gapTracker.incAccesses(); 
                 int j = i;
                 while (j >= gap) {
                     gapTracker.incComparisons();
-                    gapTracker.incAccesses(); // read arr[j-gap]
+                    gapTracker.incAccesses();
                     if (arr[j - gap] > temp) {
                         arr[j] = arr[j - gap];
-                        gapTracker.incAccesses(); // write
+                        gapTracker.incAccesses(); 
                         gapTracker.incSwaps();
                         j -= gap;
                     } else {
@@ -82,7 +75,7 @@ public class ShellSort {
                     }
                 }
                 arr[j] = temp;
-                gapTracker.incAccesses(); // write
+                gapTracker.incAccesses();
             }
 
             gapTracker.stopTimer();
@@ -90,7 +83,7 @@ public class ShellSort {
             filled++;
             globalTracker.addFrom(gapTracker);
 
-            // ранний выход: если уже полностью отсортировано — прекращаем
+            
             if (isSorted(arr)) {
                 break;
             }
@@ -98,19 +91,19 @@ public class ShellSort {
 
         globalTracker.stopTimer();
 
-        // сократим массивы до реально заполненного количества gap'ов
+        
         int[] actualGaps = Arrays.copyOf(gaps, filled);
         PerformanceTracker[] actualPerGap = Arrays.copyOf(perGapTrackers, filled);
 
         return new ShellSortResult(globalTracker, actualGaps, actualPerGap);
     }
 
-    /** Упрощённая версия без возврата результата */
+    
     public static void sort(int[] arr, GapSequence gapSequence, PerformanceTracker tracker) {
         sortWithResult(arr, gapSequence, tracker == null ? new PerformanceTracker() : tracker);
     }
 
-    /** Генерация последовательностей gap */
+    
     public static int[] generateGaps(int n, GapSequence seq) {
         if (n <= 1) return new int[0];
         List<Integer> gaps = new ArrayList<>();
